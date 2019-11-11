@@ -13,6 +13,7 @@ menu.variant=Variant
 328.upload.tool=avrdude
 328.upload.protocol=arduino
 328.upload.maximum_size=29696
+328.upload.maximum_data_size=2048
 328.upload.speed=57600
 328.bootloader.tool=avrdude
 328.bootloader.high_fuses=0xff

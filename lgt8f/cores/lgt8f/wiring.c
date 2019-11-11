@@ -116,7 +116,7 @@ void delay(unsigned long ms)
 	}
 }
 
-/* Delay for the given number of microseconds.  Assumes a 1, 8, 12, 16, 20 or 24 MHz clock. */
+/* Delay for the given number of microseconds.  Assumes a 1, 8, 12, 16, 20, 24 or 32 MHz clock. */
 void delayMicroseconds(unsigned int us)
 {
 	// call = 4 cycles + 2 to 4 cycles to init us(2 for constant delay, 4 for variable)
@@ -124,7 +124,23 @@ void delayMicroseconds(unsigned int us)
 	// calling avrlib's delay_us() function with low values (e.g. 1 or
 	// 2 microseconds) gives delays longer than desired.
 	//delay_us(us);
-#if F_CPU >= 24000000L
+#if F_CPU >= 32000000L
+	// for the 32 MHz clock for LGT8FX
+
+	// zero delay fix
+	if (!us) return; //  = 3 cycles, (4 when true)
+
+	// the following loop takes a 1/8 of a microsecond (4 cycles)
+	// per iteration, so execute it eight times for each microsecond of
+	// delay requested.
+	us *= 8; // x8 us, = 7 cycles
+
+	// account for the time taken in the preceeding commands.
+	// we just burned 22 (24) cycles above, remove 5, (5*4=20)
+	// us is at least 8 so we can substract 5
+	us -= 5; //=2 cycles
+
+#elif F_CPU >= 24000000L
 	// for the 24 MHz clock for the aventurous ones, trying to overclock
 
 	// zero delay fix
